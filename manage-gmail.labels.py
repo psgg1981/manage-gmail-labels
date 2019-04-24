@@ -11,7 +11,7 @@ import logging
 import sys
 
 __author__ = "Pedro Gonçalves"
-__version__ = "0.3.0"
+__version__ = "0.3.1"           # Fixed renaming of label to existing name
 __license__ = "MIT"
 
 
@@ -54,7 +54,7 @@ def command_list(service):
         print('An unknown error occurred: %s', error)
 
 
-def makeLabel(newLabelName, mlv='hide', llv='labelHide'):
+def makeLabel(newLabelName, mlv='show', llv='labelHide'):
     """Create Label object.
 
     Args:
@@ -101,7 +101,7 @@ def command_count(service, labelName):
           messages.extend(response['messages'])
           logging.debug(str(len(response['messages'])) + ' messages returned in recent query (total collected so far: ' + str(len(messages)) + ')')
          
-          if len(messages) > 500 :
+          if len(messages) >= 500 :
             userInput = input('There are too many messages to retrieve (' + str(len(messages)) + '+). Do you want to continue (y/N)?')
             if userInput != 'y' :                
                 plusSign = '+'
@@ -178,7 +178,7 @@ def command_update(service, oldLabelName, newLabelName):
         elif oldLabelId == '':
             print('Original label \'', oldLabelName, '\' was not found', sep='')  
 
-        elif newLabelId == '':
+        elif newLabelId != '':
             print('New label name \'', newLabelName, '\' already in use', sep='')  
 
     except errors.HttpError as error:
