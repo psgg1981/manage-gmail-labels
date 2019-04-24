@@ -11,7 +11,7 @@ import logging
 import sys
 
 __author__ = "Pedro Gonçalves"
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 __license__ = "MIT"
 
 
@@ -69,6 +69,51 @@ def makeLabel(newLabelName, mlv='hide', llv='labelHide'):
            'name': newLabelName,
            'labelListVisibility': llv}
     return label
+
+def command_count(service, labelName):
+    """Calls the Gmail API, searches of the specified label and counts how many messages are assigned to it.
+    """
+    try:
+        # search for the label id
+        labels = getLabelsList(service).get('labels', [])
+        labelId = ''
+        for label in labels:
+            if label['name'] == labelName:
+                labelId = label['id'];
+                break;
+
+        # build the label Id list
+        labelIds=[]
+        labelIds.append(labelId)
+
+        # search for messages with the given label Id
+        response = service.users().messages().list(userId='me', labelIds=labelIds).execute()
+        messages = []
+        if 'messages' in response:
+          messages.extend(response['messages'])
+          logging.debug(str(len(response['messages'])) + ' messages returned in recent query')
+
+        userInput = ''
+        plusSign  = ''
+        while 'nextPageToken' in response:
+          page_token = response['nextPageToken']
+          response = service.users().messages().list(userId='me', labelIds=labelIds, pageToken=page_token).execute()
+          messages.extend(response['messages'])
+          logging.debug(str(len(response['messages'])) + ' messages returned in recent query (total collected so far: ' + str(len(messages)) + ')')
+         
+          if len(messages) > 500 :
+            userInput = input('There are too many messages to retrieve (' + str(len(messages)) + '+). Do you want to continue (y/N)?')
+            if userInput != 'y' :                
+                plusSign = '+'
+                print('Exiting...')
+                break;
+            else:
+                continue;
+        
+        print(str(len(messages)) + plusSign + ' messages found with label \'' + labelName + '\'')
+
+    except errors.HttpError as error:
+        print('An error occurred: %s', error)
 
 def command_add(service, newLabel):
     """Calls the Gmail API, adding the new label to the user's mailbox.
@@ -169,6 +214,10 @@ def main(args):
     if args.list:
         command_list(service)
 
+    elif vars(args).get('count') != None:
+        label = vars(args)['count'][0]
+        command_count(service, label)
+
     elif vars(args).get('add') != None:
         newLabel = vars(args)['add'][0]
         command_add(service, newLabel)
@@ -188,7 +237,7 @@ def main(args):
 if __name__ == '__main__':
 
     # Logging format definition
-    logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', filename=sys.argv[0] + '.log', level=logging.INFO)
+    logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', filename=sys.argv[0] + '.log', level=logging.DEBUG)
 
     parser = argparse.ArgumentParser()
 
@@ -199,7 +248,9 @@ if __name__ == '__main__':
         version="%(prog)s (version {version})".format(version=__version__))
 
     # Required positional argument
+
     parser.add_argument('-l', '--list',     help='list all labels', action='store_true')
+    parser.add_argument('-c', '--count',     help='counts how many message have been assigned a specific label ', nargs=1)
     parser.add_argument('-a', '--add',     help='add a label', nargs=1)
     parser.add_argument('-rm', '--remove',   help='remove an existing label', nargs=1)
     parser.add_argument('-ren', '--rename', help='rename a label', nargs=2)
