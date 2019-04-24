@@ -6,7 +6,7 @@ This work was created as a pet project and a way to practice Python (https://doc
 
 # How to run 
 ```
-your-prompt$ python manage-gmail.labels.py
+your-prompt$ python manage-gmail-labels.py
 usage: manage-gmail.labels.py [-h] [-v] [-l] [-c COUNT] [-a ADD] [-rm REMOVE] [-ren RENAME RENAME]
 
 optional arguments:
