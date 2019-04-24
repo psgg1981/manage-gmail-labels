@@ -7,9 +7,11 @@ from google.auth.transport.requests import Request
 from apiclient import errors
 
 import argparse
+import logging
+import sys
 
 __author__ = "Pedro Gonçalves"
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 __license__ = "MIT"
 
 
@@ -74,7 +76,9 @@ def command_add(service, newLabel):
     try:
 
         results = service.users().labels().create(userId='me', body=makeLabel(newLabel)).execute()
-        print(newLabel, 'created successfully')
+        msg = newLabel + ' created successfully'
+        logging.info(msg)
+        print(msg)
 
     except errors.HttpError as error:
         print('An error occurred: %s', error)
@@ -93,7 +97,10 @@ def command_remove(service, labelName):
 
         if labelId != '':
             results = service.users().labels().delete(userId='me', id=labelId).execute()
-            print('Label \'',labelName,'\' removed successfully', sep='')
+            msg = 'Label \'' + labelName + '\' removed successfully'
+            logging.info(msg)
+            print(msg)
+            
         else:
             print('Label \'', labelName, '\' not found', sep='')    
 
@@ -179,6 +186,9 @@ def main(args):
         parser.print_help()
 
 if __name__ == '__main__':
+
+    # Logging format definition
+    logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s', filename=sys.argv[0] + '.log', level=logging.INFO)
 
     parser = argparse.ArgumentParser()
 
