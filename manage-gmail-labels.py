@@ -11,7 +11,7 @@ import logging
 import sys
 
 __author__ = "Pedro Gonçalves"
-__version__ = "0.3.1"           # Fixed renaming of label to existing name
+__version__ = "0.3.2"           # Improved output of command -c (count) error when label was not found
 __license__ = "MIT"
 
 
@@ -259,7 +259,7 @@ if __name__ == '__main__':
     parser.add_argument('-c', '--count',    help='counts how many message have been assigned a specific label ', nargs=1, metavar='<label>')
     parser.add_argument('-a', '--add',      help='add a label', nargs=1, metavar='<new-label>')
     parser.add_argument('-rm', '--remove',  help='remove an existing label', nargs=1, metavar='<label>')
-    parser.add_argument('-ren', '--rename', help='rename a label', nargs=2, metavar='<existing-label> <new-label-name>')
+    parser.add_argument('-ren', '--rename', help='rename a label', nargs=2, metavar=('<existing-label>', '<new-label-name>'))
 
     args = parser.parse_args()
 
