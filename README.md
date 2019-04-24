@@ -7,18 +7,20 @@ This work was created as a pet project and a way to practice Python (https://doc
 # How to run 
 ```
 your-prompt$ python manage-gmail-labels.py
-usage: manage-gmail.labels.py [-h] [-v] [-l] [-c COUNT] [-a ADD] [-rm REMOVE] [-ren RENAME RENAME]
+usage: manage-gmail-labels.py [-h] [-v] [-l] [-c <label>] [-a <new-label>]
+                              [-rm <label>]
+                              [-ren <existing-label> <new-label-name>]
 
 optional arguments:
-  -h, --help            show this help message and exit
-  -v, --version         show program's version number and exit
-  -l, --list            list all labels
-  -c COUNT, --count COUNT
-                        counts how many message have been assigned a specific
-                        label
-  -a ADD, --add ADD     add a label
-  -rm REMOVE, --remove REMOVE
-                        remove an existing label
-  -ren RENAME RENAME, --rename RENAME RENAME
-                        rename a label
+  -h, --help                  show this help message and exit
+  -v, --version               show program's version number and exit
+  -l, --list                  list all labels
+  -c <label>, --count <label> counts how many message have been assigned a specific label
+  -a <new-label>, --add <new-label>
+                              add a label
+  -rm <label>, --remove <label>
+                              remove an existing label
+  -ren <existing-label> <new-label-name>, --rename <existing-label> <new-label-name>
+                              rename a label
+
 ```
