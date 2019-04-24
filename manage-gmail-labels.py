@@ -11,7 +11,7 @@ import logging
 import sys
 
 __author__ = "Pedro Gonçalves"
-__version__ = "0.3.2"           # Improved output of command -c (count) error when label was not found
+__version__ = "0.3.2"           # Improved output of command -c (count) error when label was not found 
 __license__ = "MIT"
 
 
