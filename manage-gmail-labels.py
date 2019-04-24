@@ -18,6 +18,9 @@ __license__ = "MIT"
 # If modifying these scopes, delete the file token.pickle.
 SCOPES = ['https://www.googleapis.com/auth/gmail.readonly', 'https://www.googleapis.com/auth/gmail.labels']
 
+# Other application constants
+HTTP_ERROR_400_INVALID_LABEL = 'Invalid label'
+
 def getLabelsList(service):
     """Calls the Gmail API, returning a list of all the label definitions in the user's mailbox.
     """
@@ -113,7 +116,10 @@ def command_count(service, labelName):
         print(str(len(messages)) + plusSign + ' messages found with label \'' + labelName + '\'')
 
     except errors.HttpError as error:
-        print('An error occurred: %s', error)
+        if HTTP_ERROR_400_INVALID_LABEL in error._get_reason() and error.resp.status == 400:
+            print('Invalid label \'' + labelName + '\'')
+        else:
+            print('An error occurred: %s', error)
 
 def command_add(service, newLabel):
     """Calls the Gmail API, adding the new label to the user's mailbox.
@@ -250,10 +256,10 @@ if __name__ == '__main__':
     # Required positional argument
 
     parser.add_argument('-l', '--list',     help='list all labels', action='store_true')
-    parser.add_argument('-c', '--count',     help='counts how many message have been assigned a specific label ', nargs=1)
-    parser.add_argument('-a', '--add',     help='add a label', nargs=1)
-    parser.add_argument('-rm', '--remove',   help='remove an existing label', nargs=1)
-    parser.add_argument('-ren', '--rename', help='rename a label', nargs=2)
+    parser.add_argument('-c', '--count',    help='counts how many message have been assigned a specific label ', nargs=1, metavar='<label>')
+    parser.add_argument('-a', '--add',      help='add a label', nargs=1, metavar='<new-label>')
+    parser.add_argument('-rm', '--remove',  help='remove an existing label', nargs=1, metavar='<label>')
+    parser.add_argument('-ren', '--rename', help='rename a label', nargs=2, metavar='<existing-label> <new-label-name>')
 
     args = parser.parse_args()
 
